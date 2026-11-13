@@ -1,0 +1,83 @@
+<!-- =====================================================================
+  Regras do laboratorio (IDs 100100-100299)
+====================================================================== -->
+
+<!-- ==== Firewall (nftables) ==== -->
+<group name="lab-fw,firewall,">
+  <rule id="100100" level="0">
+    <decoded_as>lab-fw</decoded_as>
+    <description>Firewall do lab: evento</description>
+  </rule>
+
+  <rule id="100101" level="5">
+    <if_sid>100100</if_sid>
+    <action>^FW-DROP</action>
+    <description>Firewall do lab: trafego bloqueado $(srcip) -> $(dstip):$(dstport) ($(protocol))</description>
+    <group>firewall_drop,pci_dss_1.4,</group>
+  </rule>
+
+  <rule id="100102" level="10" frequency="20" timeframe="60">
+    <if_matched_sid>100101</if_matched_sid>
+    <same_source_ip />
+    <description>Firewall do lab: muitas conexoes bloqueadas da mesma origem ($(srcip))</description>
+    <mitre><id>T1046</id></mitre>
+    <group>multiple_drops,</group>
+  </rule>
+
+  <rule id="100103" level="7">
+    <if_sid>100100</if_sid>
+    <action>^FW-BLOCKLIST</action>
+    <description>Firewall do lab: trafego de IP em quarentena (blocklist) $(srcip)</description>
+  </rule>
+
+  <rule id="100104" level="8">
+    <if_sid>100100</if_sid>
+    <action>^FW-API BLOCK</action>
+    <description>Firewall do lab: IP $(srcip) bloqueado (resposta a incidente)</description>
+    <group>active_response,</group>
+  </rule>
+
+  <rule id="100105" level="3">
+    <if_sid>100100</if_sid>
+    <action>^FW-API UNBLOCK</action>
+    <description>Firewall do lab: IP $(srcip) desbloqueado</description>
+  </rule>
+</group>
+
+<!-- ==== Suricata: nivel conforme a severidade ====
+  A regra padrao 86601 (Suricata: Alert) tem nivel 3. Aqui o nivel passa a
+  refletir a severidade da assinatura (1 = mais grave), para que alertas
+  relevantes cheguem ao ai-analyst (nivel >= 7). -->
+<group name="ids,suricata,lab-ids,">
+  <rule id="100200" level="10">
+    <if_sid>86601</if_sid>
+    <field name="alert.severity">^1$</field>
+    <description>Suricata (sev. 1): $(alert.signature)</description>
+  </rule>
+
+  <rule id="100201" level="7">
+    <if_sid>86601</if_sid>
+    <field name="alert.severity">^2$</field>
+    <description>Suricata (sev. 2): $(alert.signature)</description>
+  </rule>
+
+  <rule id="100202" level="4">
+    <if_sid>86601</if_sid>
+    <field name="alert.severity">^3$</field>
+    <description>Suricata (sev. 3): $(alert.signature)</description>
+  </rule>
+
+  <rule id="100210" level="10">
+    <if_sid>100200,100201,100202</if_sid>
+    <field name="alert.signature_id">^9100001$</field>
+    <description>Suricata (lab): multiplas tentativas de conexao SSH de $(src_ip)</description>
+    <mitre><id>T1110</id></mitre>
+  </rule>
+
+  <rule id="100211" level="8">
+    <if_sid>100200,100201,100202</if_sid>
+    <field name="alert.signature_id">^9100002$</field>
+    <description>Suricata (lab): possivel varredura de portas na LAN a partir de $(src_ip)</description>
+    <mitre><id>T1046</id></mitre>
+  </rule>
+</group>

@@ -1,0 +1,7 @@
+# T4_saida.txt - ambiente experimental - 2026-11-12T22:55:31-03:00
+>>> TESTE T4 - Alteracao de arquivo monitorado (FIM)
+[2026-11-12T22:55:31-03:00] lab-server:~$ echo '<!-- teste FIM do laboratorio -->' >> /var/www/html/index.html; echo lab_fim_teste=1 > /etc/lab-fim-teste.conf; echo arquivos alterados
+arquivos alterados
+
+T4: 2 alerta(s) em 2 regra(s); mais grave: regra 550 nivel 7 (Integrity checksum changed.)
+evidencias gravadas em testes/T4.md

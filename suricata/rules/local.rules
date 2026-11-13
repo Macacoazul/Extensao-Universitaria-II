@@ -1,0 +1,5 @@
+# Regras locais do laboratorio (sid 9100000-9100999). Somente deteccao.
+# Muitas tentativas de abrir conexao SSH com hosts da LAN a partir da mesma origem.
+alert tcp any any -> $HOME_NET 22 (msg:"LAB Multiplas tentativas de conexao SSH (possivel forca bruta)"; flow:to_server; flags:S,12; threshold: type threshold, track by_src, count 10, seconds 60; classtype:attempted-admin; sid:9100001; rev:1;)
+# Muitas conexoes iniciadas para hosts da LAN em pouco tempo (possivel varredura).
+alert tcp $HOME_NET any -> $HOME_NET any (msg:"LAB Possivel varredura de portas na LAN"; flags:S,12; threshold: type threshold, track by_src, count 40, seconds 20; classtype:attempted-recon; sid:9100002; rev:1;)

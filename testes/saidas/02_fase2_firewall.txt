@@ -1,0 +1,50 @@
+# 02_fase2_firewall.txt - ambiente experimental - 2026-11-12T22:53:38-03:00
+[2026-11-12T22:53:38-03:00] lab-cliente:~$ curl -sS -m 5 -o /dev/null -w 'LIBERADO: HTTP %{http_code} para a internet\n' http://198.51.100.10/
+LIBERADO: HTTP 200 para a internet
+
+[2026-11-12T22:53:38-03:00] lab-cliente:~$ nc -vz -w 3 198.51.100.10 23 || echo 'BLOQUEADO: telnet para a internet'
+nc: connect to 198.51.100.10 port 23 (tcp) timed out: Operation now in progress
+BLOQUEADO: telnet para a internet
+
+[2026-11-12T22:53:41-03:00] lab-cliente:~$ nc -vz -w 3 172.30.0.10 55000 || echo 'BLOQUEADO: LAN -> API do SIEM (gerencia)'
+nc: connect to 172.30.0.10 port 55000 (tcp) timed out: Operation now in progress
+BLOQUEADO: LAN -> API do SIEM (gerencia)
+
+[2026-11-12T22:53:47-03:00] fw:~$ tail -n 4 /var/log/lab-fw/firewall.log
+Nov 12 22:53:40 vm FW-DROP  IN=eth-lan OUT=eth-wan MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=198.51.100.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=59889 DF PROTO=TCP SPT=37204 DPT=23 SEQ=2132503326 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 
+Nov 12 22:53:41 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=53655 DF PROTO=TCP SPT=52694 DPT=55000 SEQ=3198076879 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 
+Nov 12 22:53:42 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=53656 DF PROTO=TCP SPT=52694 DPT=55000 SEQ=3198076879 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 
+Nov 12 22:53:43 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=53657 DF PROTO=TCP SPT=52694 DPT=55000 SEQ=3198076879 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 
+
+[2026-11-12T22:53:47-03:00] siem-gerencia:~$ grep -h '"100101"' /var/ossec/logs/alerts/alerts.json | tail -n 1 | python3 -m json.tool | head -30
+{
+    "timestamp": "2026-11-12T22:53:44.450-0300",
+    "rule": {
+        "level": 5,
+        "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:55000 (TCP)",
+        "id": "100101",
+        "firedtimes": 1,
+        "groups": [
+            "lab-fw",
+            "firewall",
+            "firewall_drop",
+            "pci_dss_1.4"
+        ]
+    },
+    "agent": {
+        "id": "000",
+        "name": "siem-emulador"
+    },
+    "manager": {
+        "name": "siem-emulador"
+    },
+    "id": "1794534824.6",
+    "decoder": {
+        "name": "lab-fw"
+    },
+    "location": "172.30.0.2",
+    "data": {
+        "action": "FW-DROP",
+        "srcip": "192.168.10.20",
+        "dstip": "172.30.0.10",
+

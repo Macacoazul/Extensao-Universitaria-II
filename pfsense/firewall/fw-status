@@ -1,0 +1,4 @@
+#!/bin/sh
+# Mostra regras com contadores, lista de bloqueio e ultimos eventos
+echo "===== Regras (nft list ruleset) ====="; nft list ruleset
+echo; echo "===== Ultimas 20 linhas do log do firewall ====="; tail -n 20 /var/log/lab-fw/firewall.log

@@ -1,0 +1,11 @@
+# 05_fase5_ia.txt - ambiente experimental - 2026-11-12T22:53:51-03:00
+[2026-11-12T22:53:59-03:00] siem-gerencia:~$ tail -n 8 /var/log/lab-sim/ai-analyst.out
+2026-11-12 22:53:51,687 INFO ai-analyst: ai-analyst iniciando: modelo=deepseek-r1:8b embeddings=nomic-embed-text AUTO_BLOCK=True nivel_min=7
+2026-11-12 22:53:51,687 ERROR ai-analyst: Ollama indisponivel em http://127.0.0.1:11434; seguirei com analise de fallback
+2026-11-12 22:53:51,687 INFO analyst.alerts: Iniciando no fim de /var/ossec/logs/alerts/alerts.json (alertas antigos nao serao analisados)
+2026-11-12 22:53:51,714 INFO ai-analyst: Saude: ATENCAO
+
+[2026-11-12T22:53:59-03:00] siem-gerencia:~$ curl -sS -m 2 http://127.0.0.1:11434/api/tags || echo 'Ollama indisponivel no ambiente experimental: analise em modo de contingencia'
+curl: (7) Failed to connect to 127.0.0.1 port 11434 after 0 ms: Couldn't connect to server
+Ollama indisponivel no ambiente experimental: analise em modo de contingencia
+

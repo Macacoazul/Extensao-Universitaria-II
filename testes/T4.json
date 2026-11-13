@@ -1,0 +1,110 @@
+{
+  "meta": {
+    "id": "T4",
+    "nome": "Alteracao de arquivo monitorado (FIM)",
+    "comando": "echo '<!-- teste FIM do laboratorio -->' >> /var/www/html/index.html; echo lab_fim_teste=1 > /etc/lab-fim-teste.conf; echo arquivos alterados",
+    "inicio": "2026-11-12T22:55:31-03:00",
+    "fim": "2026-11-12T22:55:34-03:00",
+    "esperado": "FIM: 550 (modificado, nivel 7) em /var/www/html/index.html e 554 (criado) em /etc/lab-fim-teste.conf",
+    "obtido": "2 alerta(s) em 2 regra(s); mais grave: regra 550 nivel 7 (Integrity checksum changed.)"
+  },
+  "regras": [
+    {
+      "rule_id": "550",
+      "level": 7,
+      "description": "Integrity checksum changed.",
+      "count": 1,
+      "first": "2026-11-12T22:55:33.811-0300",
+      "last": "2026-11-12T22:55:33.811-0300",
+      "srcips": "",
+      "agents": "lab-server",
+      "mitre": "T1565.001"
+    },
+    {
+      "rule_id": "554",
+      "level": 5,
+      "description": "File added to the system.",
+      "count": 1,
+      "first": "2026-11-12T22:55:33.811-0300",
+      "last": "2026-11-12T22:55:33.811-0300",
+      "srcips": "",
+      "agents": "lab-server",
+      "mitre": ""
+    }
+  ],
+  "alertas": [
+    {
+      "timestamp": "2026-11-12T22:55:33.811-0300",
+      "rule_id": "554",
+      "level": 5,
+      "description": "File added to the system.",
+      "groups": [
+        "ossec",
+        "syscheck",
+        "syscheck_entry_added",
+        "syscheck_file"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "lab-server",
+      "srcip": null,
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": "/etc/lab-fim-teste.conf",
+      "full_log": "File '/etc/lab-fim-teste.conf' added"
+    },
+    {
+      "timestamp": "2026-11-12T22:55:33.811-0300",
+      "rule_id": "550",
+      "level": 7,
+      "description": "Integrity checksum changed.",
+      "groups": [
+        "ossec",
+        "syscheck",
+        "syscheck_entry_modified",
+        "syscheck_file"
+      ],
+      "mitre": {
+        "id": [
+          "T1565.001"
+        ],
+        "tactic": [
+          "Impact"
+        ],
+        "technique": [
+          "Stored Data Manipulation"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": null,
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": "/var/www/html/index.html",
+      "full_log": "File '/var/www/html/index.html' modified"
+    }
+  ],
+  "incidentes": [
+    {
+      "id": "INC-6d971a74e7",
+      "created_at": 1794534943.8238213,
+      "first_ts": "2026-11-12T22:55:33.811-0300",
+      "last_ts": "2026-11-12T22:55:33.811-0300",
+      "category": "integridade_arquivos",
+      "srcip": null,
+      "agents": "lab-server",
+      "rule_ids": "550",
+      "max_level": 7,
+      "alert_count": 1,
+      "summary": "categoria integridade_arquivos. regras: Integrity checksum changed. (nivel 7, 1x). motivo: nivel >= 7",
+      "analysis": "{\"classificacao\": \"suspeito\", \"gravidade\": \"media\", \"causa_provavel\": \"Arquivo monitorado pelo FIM foi criado ou alterado (conteudo/hash diferente da linha de base).\", \"mitre\": [{\"tecnica_id\": \"T1565.001\", \"tecnica\": \"Stored Data Manipulation\", \"tatica\": \"Impact\"}], \"acao_recomendada\": \"Confirmar se a mudanca foi planejada (gestao de mudancas); analisar o diff registrado; restaurar do backup se a alteracao nao for autorizada.\", \"sugestao_regra\": {\"tipo\": \"wazuh\", \"conteudo\": \"<rule id=\\\"100300\\\" level=\\\"10\\\">\\n  <if_sid>550</if_sid>\\n  <field name=\\\"file\\\">^/var/www</field>\\n  <description>Conteudo web alterado: $(file)</description>\\n</rule>\", \"justificativa\": \"Eleva a prioridade de alteracoes no conteudo publicado do servidor web.\"}, \"reincidencia\": false, \"confianca\": \"media\", \"resumo\": \"1 alerta(s) da categoria integridade_arquivos (nivel maximo 7) de origem nao informada: 550 (Integrity checksum changed.).\", \"origem_analise\": \"contingencia/playbook (LLM indisponivel: ConnectionError)\"}",
+      "recurrence": 0,
+      "prior_count": 0,
+      "action": "monitorar"
+    }
+  ]
+}

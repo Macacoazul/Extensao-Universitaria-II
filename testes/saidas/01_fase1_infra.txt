@@ -1,0 +1,81 @@
+# 01_fase1_infra.txt - ambiente experimental - 2026-11-12T22:53:32-03:00
+[2026-11-12T22:53:32-03:00] siem-gerencia:~$ ip netns list
+fw (id: 0)
+cli (id: 2)
+srv (id: 1)
+inet (id: 3)
+
+[2026-11-12T22:53:32-03:00] siem-gerencia:~$ ip -br link show type bridge
+br-lab-lan       UP             0a:44:b4:24:d5:f5 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+br-lab-wan       UP             0e:bf:8b:db:0c:7b <BROADCAST,MULTICAST,UP,LOWER_UP> 
+br-lab-mgmt      UP             a2:40:ba:f3:b2:ac <BROADCAST,MULTICAST,UP,LOWER_UP> 
+
+[2026-11-12T22:53:32-03:00] fw:~$ ip -br -4 addr show | grep -v '^lo'
+eth-lan@if36     UP             192.168.10.1/24 
+eth-wan@if37     UP             172.20.0.2/24 
+eth-mgmt@if38    UP             172.30.0.2/24 
+
+[2026-11-12T22:53:32-03:00] lab-server:~$ ip -br -4 addr show | grep -v '^lo'
+eth0@if39        UP             192.168.10.10/24 
+
+[2026-11-12T22:53:32-03:00] lab-cliente:~$ ip -br -4 addr show | grep -v '^lo'
+eth0@if40        UP             192.168.10.20/24 
+
+[2026-11-12T22:53:32-03:00] lab-cliente:~$ ip route
+default via 192.168.10.1 dev eth0 
+192.168.10.0/24 dev eth0 proto kernel scope link src 192.168.10.20 
+
+[2026-11-12T22:53:32-03:00] lab-server:~$ ip route
+default via 192.168.10.1 dev eth0 
+192.168.10.0/24 dev eth0 proto kernel scope link src 192.168.10.10 
+
+[2026-11-12T22:53:32-03:00] fw:~$ ip route
+default via 172.20.0.1 dev eth-wan 
+172.20.0.0/24 dev eth-wan proto kernel scope link src 172.20.0.2 
+172.30.0.0/24 dev eth-mgmt proto kernel scope link src 172.30.0.2 
+192.168.10.0/24 dev eth-lan proto kernel scope link src 192.168.10.1 
+
+[2026-11-12T22:53:32-03:00] lab-cliente:~$ ping -c 3 -W 2 192.168.10.1
+PING 192.168.10.1 (192.168.10.1) 56(84) bytes of data.
+64 bytes from 192.168.10.1: icmp_seq=1 ttl=64 time=0.084 ms
+64 bytes from 192.168.10.1: icmp_seq=2 ttl=64 time=0.079 ms
+64 bytes from 192.168.10.1: icmp_seq=3 ttl=64 time=0.076 ms
+
+--- 192.168.10.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2033ms
+rtt min/avg/max/mdev = 0.076/0.079/0.084/0.003 ms
+
+[2026-11-12T22:53:34-03:00] lab-cliente:~$ ping -c 3 -W 2 192.168.10.10
+PING 192.168.10.10 (192.168.10.10) 56(84) bytes of data.
+64 bytes from 192.168.10.10: icmp_seq=1 ttl=64 time=0.097 ms
+64 bytes from 192.168.10.10: icmp_seq=2 ttl=64 time=0.068 ms
+64 bytes from 192.168.10.10: icmp_seq=3 ttl=64 time=0.073 ms
+
+--- 192.168.10.10 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2041ms
+rtt min/avg/max/mdev = 0.068/0.079/0.097/0.012 ms
+
+[2026-11-12T22:53:36-03:00] lab-cliente:~$ ping -c 3 -W 2 198.51.100.10
+PING 198.51.100.10 (198.51.100.10) 56(84) bytes of data.
+64 bytes from 198.51.100.10: icmp_seq=1 ttl=63 time=0.093 ms
+64 bytes from 198.51.100.10: icmp_seq=2 ttl=63 time=0.089 ms
+64 bytes from 198.51.100.10: icmp_seq=3 ttl=63 time=0.089 ms
+
+--- 198.51.100.10 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2040ms
+rtt min/avg/max/mdev = 0.089/0.090/0.093/0.002 ms
+
+[2026-11-12T22:53:38-03:00] lab-cliente:~$ ip route get 198.51.100.10
+198.51.100.10 via 192.168.10.1 dev eth0 src 192.168.10.20 uid 0 
+    cache 
+
+[2026-11-12T22:53:38-03:00] lab-cliente:~$ curl -sS -m 5 http://198.51.100.10/
+<html><body><h1>Site externo ficticio do ambiente experimental</h1></body></html>
+
+[2026-11-12T22:53:38-03:00] siem-gerencia:~$ tail -n 2 /var/log/lab-sim/internet.out
+[site-externo] requisicao de 172.20.0.2: GET / HTTP/1.1
+
+>>> o site externo viu a requisicao vindo de 172.20.0.2 (IP WAN do firewall): NAT de saida funcionando
+[2026-11-12T22:53:38-03:00] lab-cliente:~$ curl -sS -m 5 -o /dev/null -w 'HTTP %{http_code} - servidor web interno\n' http://192.168.10.10/
+HTTP 200 - servidor web interno
+

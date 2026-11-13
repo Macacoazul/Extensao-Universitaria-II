@@ -1,0 +1,7 @@
+# Scripts e configs usados dentro dos containers (Linux) precisam de LF,
+# mesmo com o git do Windows (core.autocrlf=true).
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.png binary
+*.docx binary
+*.pdf binary

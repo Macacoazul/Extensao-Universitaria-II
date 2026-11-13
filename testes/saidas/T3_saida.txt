@@ -1,0 +1,7 @@
+# T3_saida.txt - ambiente experimental - 2026-11-12T22:55:02-03:00
+>>> TESTE T3 - Assinatura de teste do Suricata (pagina estilo testmynids em site ficticio)
+[2026-11-12T22:55:02-03:00] lab-cliente:~$ curl -sS -m 10 http://198.51.100.10/uid/index.html
+uid=0(root) gid=0(root) groups=0(root)
+
+T3: 1 alerta(s) em 1 regra(s); mais grave: regra 100201 nivel 7 (Suricata (sev. 2): GPL ATTACK_RESPONSE id check returned root)
+evidencias gravadas em testes/T3.md

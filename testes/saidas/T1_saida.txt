@@ -1,0 +1,7 @@
+# T1_saida.txt - ambiente experimental - 2026-11-12T22:53:59-03:00
+>>> TESTE T1 - Varredura de portas do Cliente para o Server (situacao hipotetica)
+[2026-11-12T22:53:59-03:00] siem-gerencia:~$ python3 simulacao/hipoteticos.py varredura --origem 192.168.10.20 --alvo 192.168.10.10 --alertas 5
+5 alerta(s) hipotetico(s) de varredura 192.168.10.20 -> 192.168.10.10 gravados em /var/log/lab-sim/eve-hipotetico.json
+
+T1: 5 alerta(s) em 1 regra(s); mais grave: regra 100211 nivel 8 (Suricata (lab): possivel varredura de portas na LAN a partir de 192.168.10.20)
+evidencias gravadas em testes/T1.md

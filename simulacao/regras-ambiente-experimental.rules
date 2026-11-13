@@ -1,0 +1,9 @@
+# Regras carregadas pelo Suricata no AMBIENTE EXPERIMENTAL.
+# As regras ET Open nao puderam ser baixadas neste ambiente (sem acesso ao servidor
+# de regras); por isso a assinatura de teste do testmynids (GPL 2100498, publica no
+# ET Open) foi reproduzida abaixo com o mesmo conteudo e sid. No laboratorio real
+# (docker compose) o suricata-update baixa o ET Open completo.
+alert ip any any -> any any (msg:"GPL ATTACK_RESPONSE id check returned root"; content:"uid=0|28|root|29|"; classtype:bad-unknown; sid:2100498; rev:7;)
+# Regras locais do projeto (copia de suricata/rules/local.rules)
+alert tcp any any -> $HOME_NET 22 (msg:"LAB Multiplas tentativas de conexao SSH (possivel forca bruta)"; flow:to_server; flags:S,12; threshold: type threshold, track by_src, count 10, seconds 60; classtype:attempted-admin; sid:9100001; rev:1;)
+alert tcp $HOME_NET any -> $HOME_NET any (msg:"LAB Possivel varredura de portas na LAN"; flags:S,12; threshold: type threshold, track by_src, count 40, seconds 20; classtype:attempted-recon; sid:9100002; rev:1;)

@@ -1,0 +1,329 @@
+# =============================================================================
+# Laboratorio SOC — Monitoramento Inteligente de Redes
+#   WAN  172.20.0.0/24  (saida para a internet via NAT do Docker)
+#   LAN  192.168.10.0/24 (Ubuntu Server e Ubuntu Cliente, rota padrao no firewall)
+#   MGMT 172.30.0.0/24  (Wazuh, Ollama, ai-analyst)
+# Uso rapido: ver README.md e PROGRESSO.md
+# =============================================================================
+name: ${COMPOSE_PROJECT_NAME:-lab-soc}
+
+networks:
+  wan:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: br-lab-wan
+    ipam:
+      config:
+        - subnet: ${WAN_SUBNET}
+          gateway: ${WAN_GW}
+  lan:
+    driver: bridge
+    driver_opts:
+      # nome fixo da bridge: o Suricata escuta esta interface
+      com.docker.network.bridge.name: br-lab-lan
+    ipam:
+      config:
+        - subnet: ${LAN_SUBNET}
+          gateway: ${LAN_DOCKER_GW}
+  mgmt:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: br-lab-mgmt
+    ipam:
+      config:
+        - subnet: ${MGMT_SUBNET}
+          gateway: ${MGMT_GW}
+
+x-lan-env: &lan-env
+  FW_LAN_IP: ${FW_LAN_IP}
+  WAZUH_MANAGER_IP: ${WAZUH_MANAGER_IP}
+  TZ: America/Sao_Paulo
+
+services:
+  # ---------------------------------------------------------------- Firewall
+  firewall:
+    build: ./pfsense/firewall
+    image: lab-soc/firewall:1.0
+    hostname: fw
+    restart: unless-stopped
+    cap_add: [NET_ADMIN, NET_RAW]
+    sysctls:
+      net.ipv4.ip_forward: "1"
+      net.ipv4.conf.all.rp_filter: "0"
+      net.ipv4.conf.default.rp_filter: "0"
+    environment:
+      FW_WAN_IP: ${FW_WAN_IP}
+      FW_LAN_IP: ${FW_LAN_IP}
+      FW_MGMT_IP: ${FW_MGMT_IP}
+      WAN_GW: ${WAN_GW}
+      LAN_SUBNET: ${LAN_SUBNET}
+      WAZUH_MANAGER_IP: ${WAZUH_MANAGER_IP}
+      AI_ANALYST_IP: ${AI_ANALYST_IP}
+      FW_API_TOKEN: ${FW_API_TOKEN}
+      FW_BLOCK_TIMEOUT: ${FW_BLOCK_TIMEOUT}
+      FW_BLOCK_NETWORKS: ${AUTO_BLOCK_NETWORKS}
+      FW_PROTECTED: ${AUTO_BLOCK_PROTECTED}
+      TZ: America/Sao_Paulo
+    networks:
+      wan: { ipv4_address: "${FW_WAN_IP}" }
+      lan: { ipv4_address: "${FW_LAN_IP}" }
+      mgmt: { ipv4_address: "${FW_MGMT_IP}" }
+    mem_limit: 256m
+
+  # ---------------------------------------------------------------- LAN
+  server:
+    build:
+      context: ./lan
+      args: { ROLE: server, WAZUH_VERSION: "${WAZUH_VERSION}" }
+    image: lab-soc/server:1.0
+    hostname: lab-server
+    restart: unless-stopped
+    cap_add: [NET_ADMIN]          # rota padrao + iptables (active response firewall-drop)
+    environment:
+      <<: *lan-env
+      WAZUH_AGENT_NAME: lab-server
+      LAB_SSH_USER: ${LAB_SSH_USER:-labuser}
+      LAB_SSH_PASSWORD: ${LAB_SSH_PASSWORD:?defina LAB_SSH_PASSWORD no .env}
+    dns: [1.1.1.1, 8.8.8.8]
+    networks:
+      lan: { ipv4_address: "${SERVER_IP}" }
+    depends_on: [firewall]
+    mem_limit: 512m
+
+  cliente:
+    build:
+      context: ./lan
+      args: { ROLE: cliente, WAZUH_VERSION: "${WAZUH_VERSION}" }
+    image: lab-soc/cliente:1.0
+    hostname: lab-cliente
+    restart: unless-stopped
+    cap_add: [NET_ADMIN]
+    environment:
+      <<: *lan-env
+      WAZUH_AGENT_NAME: lab-cliente
+    dns: [1.1.1.1, 8.8.8.8]
+    networks:
+      lan: { ipv4_address: "${CLIENTE_IP}" }
+    depends_on: [firewall]
+    mem_limit: 512m
+
+  # ---------------------------------------------------------------- Sensor IDS
+  # Escuta a bridge da LAN (br-lab-lan) em modo promiscuo, no namespace de rede
+  # do host (VM do Docker Desktop). Justificativa no README (secao "Sensor").
+  suricata:
+    image: ${SURICATA_IMAGE}
+    restart: unless-stopped
+    network_mode: host
+    cap_add: [NET_ADMIN, NET_RAW, SYS_NICE]
+    entrypoint: ["/bin/sh", "/lab/entrypoint-lab.sh"]
+    environment:
+      SURICATA_IFACE: br-lab-lan
+      SURICATA_HOME_NET: "[${LAN_SUBNET}]"
+      TZ: America/Sao_Paulo
+    volumes:
+      - ./suricata/entrypoint-lab.sh:/lab/entrypoint-lab.sh:ro
+      - ./suricata/rules:/etc/suricata/lab:ro
+      - suricata_logs:/var/log/suricata
+      - suricata_lib:/var/lib/suricata
+    depends_on: [firewall]
+    mem_limit: 1g
+
+  # ---------------------------------------------------------------- Wazuh (single-node oficial)
+  wazuh.manager:
+    image: wazuh/wazuh-manager:${WAZUH_VERSION}
+    hostname: wazuh.manager
+    restart: unless-stopped
+    ulimits:
+      memlock: { soft: -1, hard: -1 }
+      nofile: { soft: 655360, hard: 655360 }
+    ports:
+      - "127.0.0.1:55000:55000"
+    environment:
+      - INDEXER_URL=https://wazuh.indexer:9200
+      - INDEXER_USERNAME=${INDEXER_USERNAME}
+      - INDEXER_PASSWORD=${INDEXER_PASSWORD}
+      - FILEBEAT_SSL_VERIFICATION_MODE=full
+      - SSL_CERTIFICATE_AUTHORITIES=/etc/ssl/root-ca.pem
+      - SSL_CERTIFICATE=/etc/ssl/filebeat.pem
+      - SSL_KEY=/etc/ssl/filebeat.key
+      - API_USERNAME=${API_USERNAME}
+      - API_PASSWORD=${API_PASSWORD}
+      - TZ=America/Sao_Paulo
+    volumes:
+      - wazuh_api_configuration:/var/ossec/api/configuration
+      - wazuh_etc:/var/ossec/etc
+      - wazuh_logs:/var/ossec/logs
+      - wazuh_queue:/var/ossec/queue
+      - wazuh_var_multigroups:/var/ossec/var/multigroups
+      - wazuh_integrations:/var/ossec/integrations
+      - wazuh_active_response:/var/ossec/active-response/bin
+      - wazuh_agentless:/var/ossec/agentless
+      - wazuh_wodles:/var/ossec/wodles
+      - filebeat_etc:/etc/filebeat
+      - filebeat_var:/var/lib/filebeat
+      - ./wazuh/config/wazuh_indexer_ssl_certs/root-ca-manager.pem:/etc/ssl/root-ca.pem
+      - ./wazuh/config/wazuh_indexer_ssl_certs/wazuh.manager.pem:/etc/ssl/filebeat.pem
+      - ./wazuh/config/wazuh_indexer_ssl_certs/wazuh.manager-key.pem:/etc/ssl/filebeat.key
+      - ./wazuh/config/wazuh_cluster/wazuh_manager.conf:/wazuh-config-mount/etc/ossec.conf
+      # --- personalizacoes do lab ---
+      - ./wazuh/config/custom/local_decoder.xml:/wazuh-config-mount/etc/decoders/local_decoder.xml
+      - ./wazuh/config/custom/local_rules.xml:/wazuh-config-mount/etc/rules/local_rules.xml
+      - ./wazuh/config/custom/agent.conf:/wazuh-config-mount/etc/shared/default/agent.conf
+      - suricata_logs:/var/log/suricata:ro
+    networks:
+      mgmt: { ipv4_address: "${WAZUH_MANAGER_IP}" }
+
+  # Rota de retorno do manager para a LAN (passando pelo firewall).
+  # Compartilha o namespace de rede do manager so para inserir a rota.
+  wazuh-route:
+    image: alpine:3.20
+    restart: unless-stopped
+    network_mode: "service:wazuh.manager"
+    cap_add: [NET_ADMIN]
+    command: >
+      sh -c "while true; do ip route replace ${LAN_SUBNET} via ${FW_MGMT_IP} 2>/dev/null
+      || ip route add ${LAN_SUBNET} via ${FW_MGMT_IP} 2>/dev/null; sleep 30; done"
+    depends_on: [wazuh.manager]
+    mem_limit: 32m
+
+  wazuh.indexer:
+    image: wazuh/wazuh-indexer:${WAZUH_VERSION}
+    hostname: wazuh.indexer
+    restart: unless-stopped
+    environment:
+      - "OPENSEARCH_JAVA_OPTS=${INDEXER_JAVA_OPTS}"
+    ulimits:
+      memlock: { soft: -1, hard: -1 }
+      nofile: { soft: 65536, hard: 65536 }
+    volumes:
+      - wazuh-indexer-data:/var/lib/wazuh-indexer
+      - ./wazuh/config/wazuh_indexer_ssl_certs/root-ca.pem:/usr/share/wazuh-indexer/config/certs/root-ca.pem
+      - ./wazuh/config/wazuh_indexer_ssl_certs/wazuh.indexer-key.pem:/usr/share/wazuh-indexer/config/certs/wazuh.indexer.key
+      - ./wazuh/config/wazuh_indexer_ssl_certs/wazuh.indexer.pem:/usr/share/wazuh-indexer/config/certs/wazuh.indexer.pem
+      - ./wazuh/config/wazuh_indexer_ssl_certs/admin.pem:/usr/share/wazuh-indexer/config/certs/admin.pem
+      - ./wazuh/config/wazuh_indexer_ssl_certs/admin-key.pem:/usr/share/wazuh-indexer/config/certs/admin-key.pem
+      - ./wazuh/config/wazuh_indexer/wazuh.indexer.yml:/usr/share/wazuh-indexer/config/opensearch.yml
+      - ./wazuh/config/wazuh_indexer/internal_users.yml:/usr/share/wazuh-indexer/config/opensearch-security/internal_users.yml
+    networks:
+      mgmt: { ipv4_address: "${WAZUH_INDEXER_IP}" }
+
+  wazuh.dashboard:
+    image: wazuh/wazuh-dashboard:${WAZUH_VERSION}
+    hostname: wazuh.dashboard
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${WAZUH_DASHBOARD_PORT}:5601"
+    environment:
+      - INDEXER_USERNAME=${INDEXER_USERNAME}
+      - INDEXER_PASSWORD=${INDEXER_PASSWORD}
+      - WAZUH_API_URL=https://wazuh.manager
+      - DASHBOARD_USERNAME=${DASHBOARD_USERNAME}
+      - DASHBOARD_PASSWORD=${DASHBOARD_PASSWORD}
+      - API_USERNAME=${API_USERNAME}
+      - API_PASSWORD=${API_PASSWORD}
+    volumes:
+      - ./wazuh/config/wazuh_indexer_ssl_certs/wazuh.dashboard.pem:/usr/share/wazuh-dashboard/certs/wazuh-dashboard.pem
+      - ./wazuh/config/wazuh_indexer_ssl_certs/wazuh.dashboard-key.pem:/usr/share/wazuh-dashboard/certs/wazuh-dashboard-key.pem
+      - ./wazuh/config/wazuh_indexer_ssl_certs/root-ca.pem:/usr/share/wazuh-dashboard/certs/root-ca.pem
+      - ./wazuh/config/wazuh_dashboard/opensearch_dashboards.yml:/usr/share/wazuh-dashboard/config/opensearch_dashboards.yml
+      - ./wazuh/config/wazuh_dashboard/wazuh.yml:/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml
+      - wazuh-dashboard-config:/usr/share/wazuh-dashboard/data/wazuh/config
+      - wazuh-dashboard-custom:/usr/share/wazuh-dashboard/plugins/wazuh/public/assets/custom
+    depends_on: [wazuh.indexer]
+    networks:
+      mgmt: { ipv4_address: "${WAZUH_DASHBOARD_IP}" }
+
+  # ---------------------------------------------------------------- IA
+  ollama:
+    image: ${OLLAMA_IMAGE}
+    restart: unless-stopped
+    environment:
+      OLLAMA_KEEP_ALIVE: 30m
+    ports:
+      - "127.0.0.1:11435:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    networks:
+      mgmt: { ipv4_address: "${OLLAMA_IP}" }
+    mem_limit: ${OLLAMA_MEM_LIMIT}
+
+  ai-analyst:
+    build: ./ia
+    image: lab-soc/ai-analyst:1.0
+    restart: unless-stopped
+    environment:
+      OLLAMA_URL: ${OLLAMA_URL}
+      LLM_MODEL: ${LLM_MODEL}
+      EMBED_MODEL: ${EMBED_MODEL}
+      AI_MIN_LEVEL: ${AI_MIN_LEVEL}
+      AI_GROUP_THRESHOLD: ${AI_GROUP_THRESHOLD}
+      AI_GROUP_WINDOW_S: ${AI_GROUP_WINDOW_S}
+      AI_POLL_SECONDS: ${AI_POLL_SECONDS}
+      AI_HEALTH_INTERVAL_S: ${AI_HEALTH_INTERVAL_S}
+      AI_RECURRENCE_THRESHOLD: ${AI_RECURRENCE_THRESHOLD}
+      AUTO_BLOCK: ${AUTO_BLOCK}
+      AUTO_BLOCK_REQUIRE_RECURRENCE: ${AUTO_BLOCK_REQUIRE_RECURRENCE:-true}
+      AUTO_BLOCK_NETWORKS: ${AUTO_BLOCK_NETWORKS}
+      AUTO_BLOCK_PROTECTED: ${AUTO_BLOCK_PROTECTED}
+      FW_API_URL: http://${FW_MGMT_IP}:8088
+      FW_API_TOKEN: ${FW_API_TOKEN}
+      FW_BLOCK_TIMEOUT: ${FW_BLOCK_TIMEOUT}
+      WAZUH_API_URL: https://wazuh.manager:55000
+      API_USERNAME: ${API_USERNAME}
+      API_PASSWORD: ${API_PASSWORD}
+      LAN_SUBNET: ${LAN_SUBNET}
+      MGMT_SUBNET: ${MGMT_SUBNET}
+      FW_LAN_IP: ${FW_LAN_IP}
+      SERVER_IP: ${SERVER_IP}
+      CLIENTE_IP: ${CLIENTE_IP}
+      HEALTH_TARGETS: firewall=${FW_MGMT_IP}:8088,wazuh-manager=wazuh.manager:55000,wazuh-indexer=wazuh.indexer:9200,wazuh-dashboard=wazuh.dashboard:5601,ollama=${OLLAMA_IP}:11434
+      TZ: America/Sao_Paulo
+    volumes:
+      - wazuh_logs:/var/ossec/logs:ro
+      - suricata_logs:/var/log/suricata:ro
+      - ia_data:/data
+      - ./ia:/lab-ia
+      - ./testes:/lab-testes
+    networks:
+      mgmt: { ipv4_address: "${AI_ANALYST_IP}" }
+    depends_on: [ollama, wazuh.manager, firewall]
+    mem_limit: 512m
+
+  # ---------------------------------------------------------------- Prints (sob demanda)
+  # docker compose --profile prints run --rm prints
+  prints:
+    image: mcr.microsoft.com/playwright/python:v1.48.0-jammy
+    profiles: ["prints"]
+    working_dir: /work
+    environment:
+      DASHBOARD_URL: https://wazuh.dashboard:5601
+      INDEXER_USERNAME: ${INDEXER_USERNAME}
+      INDEXER_PASSWORD: ${INDEXER_PASSWORD}
+    command: ["sh", "-c", "pip install -q playwright==1.48.0 && python /work/scripts/prints/capturar.py"]
+    volumes:
+      - ./scripts:/work/scripts:ro
+      - ./testes:/work/testes:ro
+      - ./ia:/work/ia:ro
+      - ./prints:/work/prints
+    networks:
+      - mgmt
+
+volumes:
+  wazuh_api_configuration:
+  wazuh_etc:
+  wazuh_logs:
+  wazuh_queue:
+  wazuh_var_multigroups:
+  wazuh_integrations:
+  wazuh_active_response:
+  wazuh_agentless:
+  wazuh_wodles:
+  filebeat_etc:
+  filebeat_var:
+  wazuh-indexer-data:
+  wazuh-dashboard-config:
+  wazuh-dashboard-custom:
+  suricata_logs:
+  suricata_lib:
+  ollama_models:
+  ia_data:

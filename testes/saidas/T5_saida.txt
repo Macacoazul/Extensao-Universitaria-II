@@ -1,0 +1,7 @@
+# T5_saida.txt - ambiente experimental - 2026-11-12T22:55:59-03:00
+>>> TESTE T5 - Trafego bloqueado pelo firewall (LAN -> servicos da gerencia)
+[2026-11-12T22:55:59-03:00] lab-cliente:~$ for r in 1 2 3 4 5; do for p in 22 5601 9200 11434 55000; do nc -z -w 1 172.30.0.10 $p; done; done; echo 'tentativas encerradas (todas bloqueadas)'
+tentativas encerradas (todas bloqueadas)
+
+T5: 26 alerta(s) em 2 regra(s); mais grave: regra 100102 nivel 10 (Firewall do lab: muitas conexoes bloqueadas da mesma origem (192.168.10.20))
+evidencias gravadas em testes/T5.md

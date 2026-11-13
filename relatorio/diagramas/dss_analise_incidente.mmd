@@ -1,0 +1,28 @@
+sequenceDiagram
+  autonumber
+  actor P as Pesquisador
+  participant C as Cliente 192.168.10.20
+  participant S as Servidor (sshd)
+  participant W as Wazuh (SIEM)
+  participant A as ai-analyst
+  participant M as Memória (SQLite)
+  participant L as LLM (Ollama)
+  participant F as Firewall
+  P->>C: executa cenário de teste no laboratório
+  C->>S: tentativas de login SSH
+  S->>W: auth.log via agente (5760, 5710)
+  W->>W: correlação por frequência → regra 5763 (nível 10)
+  W-->>A: alerta em alerts.json
+  A->>A: triagem e agrupamento do incidente
+  A->>M: buscar incidentes anteriores da origem e casos semelhantes
+  M-->>A: histórico (reincidência?)
+  A->>L: prompt com incidente + histórico (RAG)
+  L-->>A: JSON: classificação, gravidade, MITRE, ação
+  alt reincidência e AUTO_BLOCK=true
+    A->>F: POST /block 192.168.10.20
+    A->>W: PUT /active-response firewall-drop
+    W->>S: iptables DROP 192.168.10.20
+  else padrão
+    A-->>P: recomendação em ia/recomendacoes.md
+  end
+  A->>M: salvar incidente, análise e ação

@@ -1,0 +1,40 @@
+# T6_saida.txt - ambiente experimental - 2026-11-12T22:57:12-03:00
+>>> TESTE T6 - Reincidencia do teste 2 (situacao hipotetica)
+[2026-11-12T22:57:12-03:00] siem-gerencia:~$ python3 simulacao/hipoteticos.py forca-bruta --origem 192.168.10.20 --usuario labuser --tentativas 12 --invalidos 3
+15 tentativa(s) hipotetica(s) de login SSH de 192.168.10.20 registradas no auth.log
+
+T6: 21 alerta(s) em 5 regra(s); mais grave: regra 5763 nivel 10 (sshd: brute force trying to get access to the system. Authentication failed.)
+evidencias gravadas em testes/T6.md
+>>> VERIFICACAO DO BLOQUEIO APLICADO PELA IA
+[2026-11-12T22:57:45-03:00] fw:~$ nft list set inet filter blocklist
+table inet filter {
+	set blocklist {
+		type ipv4_addr
+		flags timeout
+		elements = { 192.168.10.20 timeout 1h expires 59m40s764ms }
+	}
+}
+
+[2026-11-12T22:57:45-03:00] lab-server:~$ iptables -S INPUT
+-P INPUT ACCEPT
+-A INPUT -s 192.168.10.20/32 -j DROP
+
+[2026-11-12T22:57:45-03:00] lab-cliente:~$ curl -sS -m 5 -o /dev/null -w 'HTTP %{http_code}\n' http://198.51.100.10/ || echo 'BLOQUEADO pelo firewall: cliente em quarentena'
+curl: (28) Connection timed out after 5002 milliseconds
+HTTP 000
+BLOQUEADO pelo firewall: cliente em quarentena
+
+[2026-11-12T22:57:50-03:00] lab-cliente:~$ curl -sS -m 5 -o /dev/null -w 'HTTP %{http_code}\n' http://192.168.10.10/ || echo 'BLOQUEADO pelo servidor (active response firewall-drop)'
+curl: (28) Connection timed out after 5002 milliseconds
+HTTP 000
+BLOQUEADO pelo servidor (active response firewall-drop)
+
+[2026-11-12T22:57:59-03:00] fw:~$ tail -n 4 /var/log/lab-fw/firewall.log
+Nov 12 22:57:46 vm FW-BLOCKLIST  IN=eth-lan OUT=eth-wan MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=198.51.100.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=28811 DF PROTO=TCP SPT=35186 DPT=80 SEQ=322313574 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 
+Nov 12 22:57:47 vm FW-BLOCKLIST  IN=eth-lan OUT=eth-wan MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=198.51.100.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=28812 DF PROTO=TCP SPT=35186 DPT=80 SEQ=322313574 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 
+Nov 12 22:57:48 vm FW-BLOCKLIST  IN=eth-lan OUT=eth-wan MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=198.51.100.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=28813 DF PROTO=TCP SPT=35186 DPT=80 SEQ=322313574 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 
+Nov 12 22:57:49 vm FW-BLOCKLIST  IN=eth-lan OUT=eth-wan MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=198.51.100.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=28814 DF PROTO=TCP SPT=35186 DPT=80 SEQ=322313574 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 
+
+[2026-11-12T22:57:59-03:00] siem-gerencia:~$ cat /var/ossec/logs/active-responses.log
+2026/11/12 22:57:25 active-response/bin/firewall-drop: add 192.168.10.20 (lab-server)
+

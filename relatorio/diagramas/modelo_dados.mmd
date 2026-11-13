@@ -1,0 +1,49 @@
+erDiagram
+  ALERTA }o--|| REGRA : "dispara"
+  ALERTA }|--o| INCIDENTE : "agrupado em"
+  INCIDENTE ||--|| ANALISE : "recebe"
+  INCIDENTE ||--o{ ACAO : "gera"
+  INCIDENTE }o--o{ INCIDENTE : "reincide em"
+  REGRA {
+    string id PK "ex.: 5763, 100102"
+    int nivel
+    string descricao
+    string mitre
+  }
+  ALERTA {
+    string id PK
+    datetime timestamp
+    string agente
+    string srcip
+    string dstip
+    string full_log
+  }
+  INCIDENTE {
+    string id PK "INC-xxxxxxxxxx"
+    real created_at
+    string first_ts
+    string last_ts
+    string category
+    string srcip
+    string agents
+    string rule_ids
+    int max_level
+    int alert_count
+    blob embedding
+    int recurrence
+    int prior_count
+  }
+  ANALISE {
+    string classificacao
+    string gravidade
+    string causa_provavel
+    string mitre
+    string acao_recomendada
+    string confianca
+    string origem_analise
+  }
+  ACAO {
+    string tipo "firewall-blocklist | active-response"
+    string comando
+    bool aplicada
+  }

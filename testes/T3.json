@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "id": "T3",
+    "nome": "Assinatura de teste do Suricata (pagina estilo testmynids em site ficticio)",
+    "comando": "curl -sS -m 10 http://198.51.100.10/uid/index.html",
+    "inicio": "2026-11-12T22:55:02-03:00",
+    "fim": "2026-11-12T22:55:05-03:00",
+    "esperado": "Suricata GPL ATTACK_RESPONSE id check returned root (sid 2100498) -> Wazuh 100201 nivel 7",
+    "obtido": "1 alerta(s) em 1 regra(s); mais grave: regra 100201 nivel 7 (Suricata (sev. 2): GPL ATTACK_RESPONSE id check returned root)"
+  },
+  "regras": [
+    {
+      "rule_id": "100201",
+      "level": 7,
+      "description": "Suricata (sev. 2): GPL ATTACK_RESPONSE id check returned root",
+      "count": 1,
+      "first": "2026-11-12T22:55:03.235-0300",
+      "last": "2026-11-12T22:55:03.235-0300",
+      "srcips": "198.51.100.10",
+      "agents": "siem-emulador",
+      "mitre": ""
+    }
+  ],
+  "alertas": [
+    {
+      "timestamp": "2026-11-12T22:55:03.235-0300",
+      "rule_id": "100201",
+      "level": 7,
+      "description": "Suricata (sev. 2): GPL ATTACK_RESPONSE id check returned root",
+      "groups": [
+        "ids",
+        "suricata",
+        "lab-ids"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "198.51.100.10",
+      "dstip": "192.168.10.20",
+      "dstport": "42064",
+      "signature": "GPL ATTACK_RESPONSE id check returned root",
+      "file": null,
+      "full_log": ""
+    }
+  ],
+  "incidentes": [
+    {
+      "id": "INC-95f6d4d633",
+      "created_at": 1794534913.8022466,
+      "first_ts": "2026-11-12T22:55:03.235-0300",
+      "last_ts": "2026-11-12T22:55:03.235-0300",
+      "category": "ids_assinatura",
+      "srcip": "198.51.100.10",
+      "agents": "siem-emulador",
+      "rule_ids": "100201",
+      "max_level": 7,
+      "alert_count": 1,
+      "summary": "categoria ids_assinatura. regras: Suricata (sev. 2): GPL ATTACK_RESPONSE id check returned root (nivel 7, 1x). motivo: nivel >= 7",
+      "analysis": "{\"classificacao\": \"suspeito\", \"gravidade\": \"media\", \"causa_provavel\": \"O trafego correspondeu a uma assinatura do IDS (Suricata); a evidencia e o conteudo do pacote/fluxo descrito na assinatura.\", \"mitre\": [], \"acao_recomendada\": \"Conferir origem, destino e payload do fluxo no eve.json; confirmar se e teste autorizado; se nao for, investigar o host interno envolvido.\", \"sugestao_regra\": {\"tipo\": \"suricata\", \"conteudo\": \"Manter a assinatura habilitada; se for teste recorrente autorizado, usar threshold/suppress apenas para o IP de teste.\", \"justificativa\": \"Evitar falsos positivos de testes sem perder a deteccao.\"}, \"reincidencia\": false, \"confianca\": \"media\", \"resumo\": \"1 alerta(s) da categoria ids_assinatura (nivel maximo 7) de 198.51.100.10: 100201 (Suricata (sev. 2): GPL ATTACK_RESPONSE id check returned root).\", \"origem_analise\": \"contingencia/playbook (LLM indisponivel: ConnectionError)\"}",
+      "recurrence": 0,
+      "prior_count": 0,
+      "action": "monitorar"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+# alertas_resumo.txt - ambiente experimental - 2026-11-12T22:58:04-03:00
+[2026-11-12T22:58:04-03:00] siem-gerencia:~$ python3 -c "import json,collections;c=collections.Counter((a['rule']['id'],a['rule']['level'],a['rule']['description'][:70]) for a in map(json.loads,open('/var/ossec/logs/alerts/alerts.json')));[print(f'{n:4d}  regra {r:>6}  nivel {l:>2}  {d}') for (r,l,d),n in sorted(c.items(),key=lambda x:(-x[0][1],x[0][0]))]"
+   1  regra 100102  nivel 10  Firewall do lab: muitas conexoes bloqueadas da mesma origem (192.168.1
+   2  regra   5763  nivel 10  sshd: brute force trying to get access to the system. Authentication f
+   1  regra 100104  nivel  8  Firewall do lab: IP 192.168.10.20 bloqueado (resposta a incidente)
+   5  regra 100211  nivel  8  Suricata (lab): possivel varredura de portas na LAN a partir de 192.16
+   5  regra 100103  nivel  7  Firewall do lab: trafego de IP em quarentena (blocklist) 192.168.10.20
+   1  regra 100201  nivel  7  Suricata (sev. 2): GPL ATTACK_RESPONSE id check returned root
+   1  regra    550  nivel  7  Integrity checksum changed.
+   3  regra 100101  nivel  5  Firewall do lab: trafego bloqueado 192.168.10.20 -> 198.51.100.10:23 (
+   8  regra 100101  nivel  5  Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:55000 
+   5  regra 100101  nivel  5  Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:22 (TC
+   5  regra 100101  nivel  5  Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:5601 (
+   5  regra 100101  nivel  5  Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:9200 (
+   5  regra 100101  nivel  5  Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:11434 
+   1  regra    554  nivel  5  File added to the system.
+   6  regra   5710  nivel  5  sshd: Attempt to login using a non-existent user
+  30  regra   5760  nivel  5  sshd: authentication failed.
+   1  regra    651  nivel  3  Host Blocked by firewall-drop Active Response
+

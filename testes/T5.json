@@ -1,0 +1,702 @@
+{
+  "meta": {
+    "id": "T5",
+    "nome": "Trafego bloqueado pelo firewall (LAN -> servicos da gerencia)",
+    "comando": "for r in 1 2 3 4 5; do for p in 22 5601 9200 11434 55000; do nc -z -w 1 172.30.0.10 $p; done; done; echo 'tentativas encerradas (todas bloqueadas)'",
+    "inicio": "2026-11-12T22:55:59-03:00",
+    "fim": "2026-11-12T22:56:27-03:00",
+    "esperado": "FW-DROP no firewall, Wazuh 100101 (nivel 5) e 100102 (nivel 10, muitas conexoes bloqueadas da mesma origem)",
+    "obtido": "26 alerta(s) em 2 regra(s); mais grave: regra 100102 nivel 10 (Firewall do lab: muitas conexoes bloqueadas da mesma origem (192.168.10.20))"
+  },
+  "regras": [
+    {
+      "rule_id": "100102",
+      "level": 10,
+      "description": "Firewall do lab: muitas conexoes bloqueadas da mesma origem (192.168.10.20)",
+      "count": 1,
+      "first": "2026-11-12T22:56:18.311-0300",
+      "last": "2026-11-12T22:56:18.311-0300",
+      "srcips": "192.168.10.20",
+      "agents": "siem-emulador",
+      "mitre": "T1046"
+    },
+    {
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:22 (TCP)",
+      "count": 25,
+      "first": "2026-11-12T22:56:00.259-0300",
+      "last": "2026-11-12T22:56:24.326-0300",
+      "srcips": "192.168.10.20",
+      "agents": "siem-emulador",
+      "mitre": ""
+    }
+  ],
+  "alertas": [
+    {
+      "timestamp": "2026-11-12T22:56:00.259-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:22 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "22",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:00 vm lab-fw: Nov 12 22:55:59 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=46329 DF PROTO=TCP SPT=60538 DPT=22 SEQ=4189701079 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:00.259-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:5601 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "5601",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:00 vm lab-fw: Nov 12 22:56:00 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=12983 DF PROTO=TCP SPT=47512 DPT=5601 SEQ=2867791945 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:02.242-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:9200 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "9200",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:02 vm lab-fw: Nov 12 22:56:01 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=16713 DF PROTO=TCP SPT=34044 DPT=9200 SEQ=1268632830 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:02.243-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:11434 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "11434",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:02 vm lab-fw: Nov 12 22:56:02 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=9196 DF PROTO=TCP SPT=52856 DPT=11434 SEQ=845384059 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:04.258-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:55000 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "55000",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:04 vm lab-fw: Nov 12 22:56:03 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=47582 DF PROTO=TCP SPT=43812 DPT=55000 SEQ=3155229943 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:04.259-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:22 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "22",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:04 vm lab-fw: Nov 12 22:56:04 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=30988 DF PROTO=TCP SPT=60542 DPT=22 SEQ=3661686054 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:06.274-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:5601 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "5601",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:06 vm lab-fw: Nov 12 22:56:05 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=41906 DF PROTO=TCP SPT=47522 DPT=5601 SEQ=3889751151 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:06.275-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:9200 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "9200",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:06 vm lab-fw: Nov 12 22:56:06 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=63871 DF PROTO=TCP SPT=34056 DPT=9200 SEQ=2623641878 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:08.294-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:11434 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "11434",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:08 vm lab-fw: Nov 12 22:56:07 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=22881 DF PROTO=TCP SPT=52870 DPT=11434 SEQ=2050615157 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:08.295-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:55000 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "55000",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:08 vm lab-fw: Nov 12 22:56:08 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=25681 DF PROTO=TCP SPT=33868 DPT=55000 SEQ=3203388641 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:10.278-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:22 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "22",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:10 vm lab-fw: Nov 12 22:56:09 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=56471 DF PROTO=TCP SPT=53572 DPT=22 SEQ=187304824 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:10.279-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:5601 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "5601",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:10 vm lab-fw: Nov 12 22:56:10 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=26373 DF PROTO=TCP SPT=40258 DPT=5601 SEQ=447671724 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:12.290-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:9200 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "9200",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:12 vm lab-fw: Nov 12 22:56:11 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=53787 DF PROTO=TCP SPT=57800 DPT=9200 SEQ=4115721918 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:12.291-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:11434 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "11434",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:12 vm lab-fw: Nov 12 22:56:12 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=37862 DF PROTO=TCP SPT=34200 DPT=11434 SEQ=4028347209 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:14.310-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:55000 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "55000",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:14 vm lab-fw: Nov 12 22:56:13 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=11119 DF PROTO=TCP SPT=33880 DPT=55000 SEQ=586512761 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:14.311-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:22 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "22",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:14 vm lab-fw: Nov 12 22:56:14 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=23695 DF PROTO=TCP SPT=53580 DPT=22 SEQ=4052481054 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:16.290-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:5601 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "5601",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:16 vm lab-fw: Nov 12 22:56:15 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=38095 DF PROTO=TCP SPT=40274 DPT=5601 SEQ=3238997628 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:16.291-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:9200 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "9200",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:16 vm lab-fw: Nov 12 22:56:16 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=60576 DF PROTO=TCP SPT=57814 DPT=9200 SEQ=1519254447 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:18.310-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:11434 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "11434",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:18 vm lab-fw: Nov 12 22:56:17 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=4677 DF PROTO=TCP SPT=34214 DPT=11434 SEQ=2939646163 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:18.311-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:55000 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "55000",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:18 vm lab-fw: Nov 12 22:56:18 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=58680 DF PROTO=TCP SPT=49974 DPT=55000 SEQ=1850874322 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:18.311-0300",
+      "rule_id": "100102",
+      "level": 10,
+      "description": "Firewall do lab: muitas conexoes bloqueadas da mesma origem (192.168.10.20)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "multiple_drops"
+      ],
+      "mitre": {
+        "id": [
+          "T1046"
+        ],
+        "tactic": [
+          "Discovery"
+        ],
+        "technique": [
+          "Network Service Discovery"
+        ]
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "55000",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:18 vm lab-fw: Nov 12 22:56:18 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=58680 DF PROTO=TCP SPT=49974 DPT=55000 SEQ=1850874322 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:20.322-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:22 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "22",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:20 vm lab-fw: Nov 12 22:56:19 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=24602 DF PROTO=TCP SPT=60660 DPT=22 SEQ=2738630627 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:20.323-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:5601 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "5601",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:20 vm lab-fw: Nov 12 22:56:20 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=17079 DF PROTO=TCP SPT=53076 DPT=5601 SEQ=934547871 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:22.306-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:9200 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "9200",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:22 vm lab-fw: Nov 12 22:56:21 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=42779 DF PROTO=TCP SPT=55078 DPT=9200 SEQ=3283585055 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:22.307-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:11434 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "11434",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:22 vm lab-fw: Nov 12 22:56:22 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=21502 DF PROTO=TCP SPT=56152 DPT=11434 SEQ=293974404 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:56:24.326-0300",
+      "rule_id": "100101",
+      "level": 5,
+      "description": "Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:55000 (TCP)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "firewall_drop",
+        "pci_dss_1.4"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "172.30.0.10",
+      "dstport": "55000",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:56:24 vm lab-fw: Nov 12 22:56:23 vm FW-DROP  IN=eth-lan OUT=eth-mgmt MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=172.30.0.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=19577 DF PROTO=TCP SPT=49982 DPT=55000 SEQ=2043149235 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    }
+  ],
+  "incidentes": [
+    {
+      "id": "INC-8ea8f59d43",
+      "created_at": 1794534989.874804,
+      "first_ts": "2026-11-12T22:56:18.311-0300",
+      "last_ts": "2026-11-12T22:56:18.311-0300",
+      "category": "varredura",
+      "srcip": "192.168.10.20",
+      "agents": "siem-emulador",
+      "rule_ids": "100102",
+      "max_level": 10,
+      "alert_count": 1,
+      "summary": "categoria varredura. regras: Firewall do lab: muitas conexoes bloqueadas da mesma origem (192.168.10.20) (nivel 10, 1x). motivo: nivel >= 7",
+      "analysis": "{\"classificacao\": \"suspeito\", \"gravidade\": \"alta\", \"causa_provavel\": \"Muitas tentativas de conexao a servicos/portas diferentes a partir da mesma origem, compativel com descoberta de servicos na rede (T1046).\", \"mitre\": [{\"tecnica_id\": \"T1046\", \"tecnica\": \"Network Service Discovery\", \"tatica\": \"Discovery\"}], \"acao_recomendada\": \"Identificar o processo/usuario que gerou as conexoes no host de origem; isolar o host se a atividade nao for autorizada; manter a politica default-deny entre segmentos.\", \"sugestao_regra\": {\"tipo\": \"firewall\", \"conteudo\": \"nft add rule inet filter forward iifname $LAN_IF ct state new meter scan { ip saddr limit rate over 30/minute } log prefix \\\"FW-SCAN \\\" group 1 drop\", \"justificativa\": \"Limita novas conexoes por origem para conter varreduras.\"}, \"reincidencia\": false, \"confianca\": \"media\", \"resumo\": \"1 alerta(s) da categoria varredura (nivel maximo 10) de 192.168.10.20: 100102 (Firewall do lab: muitas conexoes bloqueadas da mesma origem (192.168.10.20)).\", \"origem_analise\": \"contingencia/playbook (LLM indisponivel: ConnectionError)\"}",
+      "recurrence": 0,
+      "prior_count": 0,
+      "action": "recomendado bloqueio"
+    },
+    {
+      "id": "INC-530fc851e9",
+      "created_at": 1794534995.884156,
+      "first_ts": "2026-11-12T22:56:00.259-0300",
+      "last_ts": "2026-11-12T22:56:24.326-0300",
+      "category": "firewall",
+      "srcip": "192.168.10.20",
+      "agents": "siem-emulador",
+      "rule_ids": "100101",
+      "max_level": 5,
+      "alert_count": 25,
+      "summary": "categoria firewall. regras: Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:22 (TCP) (nivel 5, 25x). motivo: 10 alertas de nivel < 7 da mesma origem em 300s",
+      "analysis": "{\"classificacao\": \"suspeito\", \"gravidade\": \"baixa\", \"causa_provavel\": \"Trafego negado pela politica do firewall: a origem tentou acessar destinos/portas nao liberados.\", \"mitre\": [], \"acao_recomendada\": \"Verificar qual aplicacao no host de origem gera o trafego; manter o bloqueio; investigar se o volume indicar varredura.\", \"sugestao_regra\": {\"tipo\": \"nenhuma\", \"conteudo\": \"\", \"justificativa\": \"A politica atual ja bloqueia e registra o trafego.\"}, \"reincidencia\": false, \"confianca\": \"media\", \"resumo\": \"25 alerta(s) da categoria firewall (nivel maximo 5) de 192.168.10.20: 100101 (Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:22 (TCP)).\", \"origem_analise\": \"contingencia/playbook (LLM indisponivel: ConnectionError)\"}",
+      "recurrence": 0,
+      "prior_count": 0,
+      "action": "monitorar"
+    }
+  ]
+}

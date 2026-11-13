@@ -1,0 +1,190 @@
+{
+  "meta": {
+    "id": "T1",
+    "nome": "Varredura de portas do Cliente para o Server (situacao hipotetica)",
+    "comando": "python3 simulacao/hipoteticos.py varredura --origem 192.168.10.20 --alvo 192.168.10.10 --alertas 5",
+    "inicio": "2026-11-12T22:53:59-03:00",
+    "fim": "2026-11-12T22:54:05-03:00",
+    "esperado": "Alertas do IDS (regra local 9100002 -> Wazuh 100211, nivel 8, T1046) com origem 192.168.10.20 e analise da IA",
+    "obtido": "5 alerta(s) em 1 regra(s); mais grave: regra 100211 nivel 8 (Suricata (lab): possivel varredura de portas na LAN a partir de 192.168.10.20)"
+  },
+  "regras": [
+    {
+      "rule_id": "100211",
+      "level": 8,
+      "description": "Suricata (lab): possivel varredura de portas na LAN a partir de 192.168.10.20",
+      "count": 5,
+      "first": "2026-11-12T22:54:00.215-0300",
+      "last": "2026-11-12T22:54:02.216-0300",
+      "srcips": "192.168.10.20",
+      "agents": "siem-emulador",
+      "mitre": "T1046"
+    }
+  ],
+  "alertas": [
+    {
+      "timestamp": "2026-11-12T22:54:00.215-0300",
+      "rule_id": "100211",
+      "level": 8,
+      "description": "Suricata (lab): possivel varredura de portas na LAN a partir de 192.168.10.20",
+      "groups": [
+        "ids",
+        "suricata",
+        "lab-ids"
+      ],
+      "mitre": {
+        "id": [
+          "T1046"
+        ],
+        "tactic": [
+          "Discovery"
+        ],
+        "technique": [
+          "Network Service Discovery"
+        ]
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "192.168.10.10",
+      "dstport": "25",
+      "signature": "LAB Possivel varredura de portas na LAN",
+      "file": null,
+      "full_log": ""
+    },
+    {
+      "timestamp": "2026-11-12T22:54:00.215-0300",
+      "rule_id": "100211",
+      "level": 8,
+      "description": "Suricata (lab): possivel varredura de portas na LAN a partir de 192.168.10.20",
+      "groups": [
+        "ids",
+        "suricata",
+        "lab-ids"
+      ],
+      "mitre": {
+        "id": [
+          "T1046"
+        ],
+        "tactic": [
+          "Discovery"
+        ],
+        "technique": [
+          "Network Service Discovery"
+        ]
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "192.168.10.10",
+      "dstport": "25",
+      "signature": "LAB Possivel varredura de portas na LAN",
+      "file": null,
+      "full_log": ""
+    },
+    {
+      "timestamp": "2026-11-12T22:54:01.215-0300",
+      "rule_id": "100211",
+      "level": 8,
+      "description": "Suricata (lab): possivel varredura de portas na LAN a partir de 192.168.10.20",
+      "groups": [
+        "ids",
+        "suricata",
+        "lab-ids"
+      ],
+      "mitre": {
+        "id": [
+          "T1046"
+        ],
+        "tactic": [
+          "Discovery"
+        ],
+        "technique": [
+          "Network Service Discovery"
+        ]
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "192.168.10.10",
+      "dstport": "25",
+      "signature": "LAB Possivel varredura de portas na LAN",
+      "file": null,
+      "full_log": ""
+    },
+    {
+      "timestamp": "2026-11-12T22:54:01.216-0300",
+      "rule_id": "100211",
+      "level": 8,
+      "description": "Suricata (lab): possivel varredura de portas na LAN a partir de 192.168.10.20",
+      "groups": [
+        "ids",
+        "suricata",
+        "lab-ids"
+      ],
+      "mitre": {
+        "id": [
+          "T1046"
+        ],
+        "tactic": [
+          "Discovery"
+        ],
+        "technique": [
+          "Network Service Discovery"
+        ]
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "192.168.10.10",
+      "dstport": "25",
+      "signature": "LAB Possivel varredura de portas na LAN",
+      "file": null,
+      "full_log": ""
+    },
+    {
+      "timestamp": "2026-11-12T22:54:02.216-0300",
+      "rule_id": "100211",
+      "level": 8,
+      "description": "Suricata (lab): possivel varredura de portas na LAN a partir de 192.168.10.20",
+      "groups": [
+        "ids",
+        "suricata",
+        "lab-ids"
+      ],
+      "mitre": {
+        "id": [
+          "T1046"
+        ],
+        "tactic": [
+          "Discovery"
+        ],
+        "technique": [
+          "Network Service Discovery"
+        ]
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "192.168.10.10",
+      "dstport": "23",
+      "signature": "LAB Possivel varredura de portas na LAN",
+      "file": null,
+      "full_log": ""
+    }
+  ],
+  "incidentes": [
+    {
+      "id": "INC-35b47367e2",
+      "created_at": 1794534853.7304912,
+      "first_ts": "2026-11-12T22:54:00.215-0300",
+      "last_ts": "2026-11-12T22:54:02.216-0300",
+      "category": "ids_assinatura",
+      "srcip": "192.168.10.20",
+      "agents": "siem-emulador",
+      "rule_ids": "100211",
+      "max_level": 8,
+      "alert_count": 5,
+      "summary": "categoria ids_assinatura. regras: Suricata (lab): possivel varredura de portas na LAN a partir de 192.168.10.20 (nivel 8, 5x). motivo: nivel >= 7",
+      "analysis": "{\"classificacao\": \"suspeito\", \"gravidade\": \"media\", \"causa_provavel\": \"O trafego correspondeu a uma assinatura do IDS (Suricata); a evidencia e o conteudo do pacote/fluxo descrito na assinatura.\", \"mitre\": [{\"tecnica_id\": \"T1046\", \"tecnica\": \"Network Service Discovery\", \"tatica\": \"Discovery\"}], \"acao_recomendada\": \"Conferir origem, destino e payload do fluxo no eve.json; confirmar se e teste autorizado; se nao for, investigar o host interno envolvido.\", \"sugestao_regra\": {\"tipo\": \"suricata\", \"conteudo\": \"Manter a assinatura habilitada; se for teste recorrente autorizado, usar threshold/suppress apenas para o IP de teste.\", \"justificativa\": \"Evitar falsos positivos de testes sem perder a deteccao.\"}, \"reincidencia\": false, \"confianca\": \"media\", \"resumo\": \"5 alerta(s) da categoria ids_assinatura (nivel maximo 8) de 192.168.10.20: 100211 (Suricata (lab): possivel varredura de portas na LAN a partir de 192.168.10.20).\", \"origem_analise\": \"contingencia/playbook (LLM indisponivel: ConnectionError)\"}",
+      "recurrence": 0,
+      "prior_count": 0,
+      "action": "monitorar"
+    }
+  ]
+}

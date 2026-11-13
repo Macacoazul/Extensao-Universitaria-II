@@ -1,0 +1,5 @@
+# Envia o log do firewall para o Wazuh via syslog (UDP 514)
+module(load="imfile")
+global(workDirectory="/var/spool/rsyslog")
+input(type="imfile" File="/var/log/lab-fw/firewall.log" Tag="lab-fw:" Facility="local0" Severity="warning")
+local0.* action(type="omfwd" target="${WAZUH_MANAGER_IP}" port="514" protocol="udp")

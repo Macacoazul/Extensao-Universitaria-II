@@ -1,0 +1,25 @@
+# 03_fase3_ids_siem.txt - ambiente experimental - 2026-11-12T22:53:47-03:00
+[2026-11-12T22:53:47-03:00] siem-gerencia:~$ pgrep -a suricata | cut -c1-150
+
+[2026-11-12T22:53:47-03:00] siem-gerencia:~$ tail -n 3 /var/log/suricata/suricata.log
+[5340 - Suricata-Main] 2026-11-12 22:53:28 Info: runmodes: br-lab-lan: creating 2 threads
+[5340 - Suricata-Main] 2026-11-12 22:53:28 Info: unix-manager: unix socket '/var/run/suricata-command.socket'
+[5340 - Suricata-Main] 2026-11-12 22:53:28 Notice: threads: Threads created -> W: 2 FM: 1 FR: 1   Engine started.
+
+[2026-11-12T22:53:47-03:00] lab-cliente:~$ curl -sS -m 5 -o /dev/null http://192.168.10.10/ && echo trafego web gerado
+trafego web gerado
+
+[2026-11-12T22:53:51-03:00] siem-gerencia:~$ grep -c '"event_type"' /var/log/suricata/eve.json
+10
+
+[2026-11-12T22:53:51-03:00] siem-gerencia:~$ grep '"event_type":"flow"' /var/log/suricata/eve.json | tail -n 1 | python3 -m json.tool | head -25
+Expecting value: line 1 column 1 (char 0)
+
+[2026-11-12T22:53:51-03:00] siem-gerencia:~$ tail -n 6 /var/log/lab-sim/emulador.out
+[alerta] 100101 n5 Firewall do lab: trafego bloqueado 192.168.10.20 -> 198.51.100.10:23 (TCP)
+[alerta] 100101 n5 Firewall do lab: trafego bloqueado 192.168.10.20 -> 198.51.100.10:23 (TCP)
+[alerta] 100101 n5 Firewall do lab: trafego bloqueado 192.168.10.20 -> 198.51.100.10:23 (TCP)
+[alerta] 100101 n5 Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:55000 (TCP)
+[alerta] 100101 n5 Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:55000 (TCP)
+[alerta] 100101 n5 Firewall do lab: trafego bloqueado 192.168.10.20 -> 172.30.0.10:55000 (TCP)
+

@@ -1,0 +1,32 @@
+<!-- =====================================================================
+  Decoders do laboratorio
+  Firewall (nftables + ulogd2, enviado por syslog com a tag "lab-fw"):
+    ... lab-fw: Nov 12 22:10:01 fw FW-DROP IN=eth1 OUT=eth0 ... SRC=192.168.10.20
+        DST=1.1.1.1 LEN=60 ... PROTO=TCP SPT=40000 DPT=23 ...
+    ... lab-fw: Nov 12 22:11:00 fw FW-API BLOCK SRC=192.168.10.20 TIMEOUT=1h ...
+====================================================================== -->
+<decoder name="lab-fw">
+  <program_name>^lab-fw</program_name>
+</decoder>
+
+<!-- Acoes da API de bloqueio (auditoria) -->
+<decoder name="lab-fw-api">
+  <parent>lab-fw</parent>
+  <prematch type="pcre2">FW-API </prematch>
+  <regex type="pcre2">(FW-API \w+)\s+SRC=(\S+)</regex>
+  <order>action, srcip</order>
+</decoder>
+
+<!-- Pacotes registrados pelo nftables (sibling decoders: mesmo nome) -->
+<decoder name="lab-fw-packet">
+  <parent>lab-fw</parent>
+  <prematch type="pcre2">FW-(DROP|BLOCKLIST)</prematch>
+  <regex type="pcre2">(FW-[A-Z-]+)\s.*?SRC=(\S+)\s+DST=(\S+).*?PROTO=(\w+)</regex>
+  <order>action, srcip, dstip, protocol</order>
+</decoder>
+
+<decoder name="lab-fw-packet">
+  <parent>lab-fw</parent>
+  <regex type="pcre2">SPT=(\d+)\s+DPT=(\d+)</regex>
+  <order>srcport, dstport</order>
+</decoder>

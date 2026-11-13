@@ -1,0 +1,29 @@
+flowchart LR
+  subgraph INET["ns inet — internet fictícia"]
+    SITE[site 198.51.100.10<br/>gateway 172.20.0.1]
+  end
+  subgraph FWNS["ns fw — firewall do projeto"]
+    FW[nftables + ulogd2 + rsyslog + API<br/>mesmo entrypoint do container]
+  end
+  subgraph LAN["br-lab-lan 192.168.10.0/24"]
+    SRV["ns srv — lab-server .10<br/>nginx + sshd reais"]
+    CLI["ns cli — lab-cliente .20"]
+  end
+  subgraph HOST["host — gerência 172.30.0.10"]
+    SUR[Suricata 7.0.3<br/>af-packet br-lab-lan]
+    EMU[Emulador do SIEM<br/>alertas no formato Wazuh<br/>+ API agentes / active response]
+    AI[ai-analyst<br/>código do projeto]
+    HIP[/eventos hipotéticos<br/>testes 1, 2 e 6/]
+  end
+  SITE --- FW
+  FW --- SRV
+  FW --- CLI
+  SUR -. captura .- LAN
+  SUR -- eve.json --> EMU
+  FW -- syslog --> EMU
+  SRV -- auth.log / FIM --> EMU
+  HIP --> EMU
+  EMU -- alerts.json --> AI
+  AI -- bloqueio --> FW
+  AI -- firewall-drop --> EMU
+  EMU -- iptables --> SRV

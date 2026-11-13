@@ -1,0 +1,5 @@
+#!/bin/sh
+# Uso: fw-block <ip> [tempo, ex.: 30m, 1h]   (aprovacao manual de recomendacao da IA)
+set -eu
+IP="${1:?informe o IP}"; T="${2:-${FW_BLOCK_TIMEOUT:-1h}}"
+exec python3 /usr/local/bin/fw_api.py --cli block "$IP" "$T"

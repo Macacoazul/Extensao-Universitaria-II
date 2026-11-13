@@ -1,0 +1,28 @@
+flowchart LR
+  INET((Internet)) --- FW
+  subgraph WAN["WAN 172.20.0.0/24"]
+    FW[Firewall nftables<br/>WAN .2 · LAN .1 · MGMT .2<br/>NAT · default deny · syslog]
+  end
+  subgraph LAN["LAN 192.168.10.0/24 — bridge br-lab-lan"]
+    SRV[Ubuntu Server .10<br/>SSH · Nginx · agente Wazuh · FIM]
+    CLI[Ubuntu Cliente .20<br/>agente Wazuh]
+  end
+  subgraph MGMT["Gerência 172.30.0.0/24"]
+    WM[Wazuh manager .10]
+    WI[Wazuh indexer .11]
+    WD[Wazuh dashboard .12]
+    OL[Ollama .20<br/>DeepSeek-R1 / Hermes 3]
+    AI[ai-analyst .21<br/>triagem · RAG · prevenção]
+  end
+  FW --- SRV
+  FW --- CLI
+  SUR[[Suricata IDS<br/>escuta br-lab-lan]] -. espelhamento .- LAN
+  SUR -- eve.json --> WM
+  FW -- syslog UDP 514 --> WM
+  SRV -- agente 1514/1515 --> WM
+  CLI -- agente 1514/1515 --> WM
+  WM --> WI --> WD
+  WM -- alerts.json --> AI
+  AI <--> OL
+  AI -- API de bloqueio --> FW
+  AI -- active response --> WM

@@ -1,0 +1,7 @@
+# T2_saida.txt - ambiente experimental - 2026-11-12T22:54:30-03:00
+>>> TESTE T2 - Forca bruta SSH no Server (situacao hipotetica)
+[2026-11-12T22:54:30-03:00] siem-gerencia:~$ python3 simulacao/hipoteticos.py forca-bruta --origem 192.168.10.20 --usuario labuser --tentativas 12 --invalidos 3
+15 tentativa(s) hipotetica(s) de login SSH de 192.168.10.20 registradas no auth.log
+
+T2: 19 alerta(s) em 3 regra(s); mais grave: regra 5763 nivel 10 (sshd: brute force trying to get access to the system. Authentication failed.)
+evidencias gravadas em testes/T2.md

@@ -1,0 +1,863 @@
+{
+  "meta": {
+    "id": "T6",
+    "nome": "Reincidencia do teste 2 (situacao hipotetica)",
+    "comando": "python3 simulacao/hipoteticos.py forca-bruta --origem 192.168.10.20 --usuario labuser --tentativas 12 --invalidos 3",
+    "inicio": "2026-11-12T22:57:12-03:00",
+    "fim": "2026-11-12T22:57:59-03:00",
+    "esperado": "IA detecta reincidencia de 192.168.10.20 e, com AUTO_BLOCK=true, aplica o bloqueio (firewall + active response)",
+    "obtido": "26 alerta(s) em 6 regra(s); mais grave: regra 5763 nivel 10 (sshd: brute force trying to get access to the system. Authentication failed.)"
+  },
+  "regras": [
+    {
+      "rule_id": "5763",
+      "level": 10,
+      "description": "sshd: brute force trying to get access to the system. Authentication failed.",
+      "count": 1,
+      "first": "2026-11-12T22:57:15.294-0300",
+      "last": "2026-11-12T22:57:15.294-0300",
+      "srcips": "192.168.10.20",
+      "agents": "lab-server",
+      "mitre": "T1110"
+    },
+    {
+      "rule_id": "100104",
+      "level": 8,
+      "description": "Firewall do lab: IP 192.168.10.20 bloqueado (resposta a incidente)",
+      "count": 1,
+      "first": "2026-11-12T22:57:25.953-0300",
+      "last": "2026-11-12T22:57:25.953-0300",
+      "srcips": "192.168.10.20",
+      "agents": "siem-emulador",
+      "mitre": ""
+    },
+    {
+      "rule_id": "100103",
+      "level": 7,
+      "description": "Firewall do lab: trafego de IP em quarentena (blocklist) 192.168.10.20",
+      "count": 5,
+      "first": "2026-11-12T22:57:46.242-0300",
+      "last": "2026-11-12T22:57:50.338-0300",
+      "srcips": "192.168.10.20",
+      "agents": "siem-emulador",
+      "mitre": ""
+    },
+    {
+      "rule_id": "5710",
+      "level": 5,
+      "description": "sshd: Attempt to login using a non-existent user",
+      "count": 3,
+      "first": "2026-11-12T22:57:13.293-0300",
+      "last": "2026-11-12T22:57:13.293-0300",
+      "srcips": "192.168.10.20",
+      "agents": "lab-server",
+      "mitre": "T1110.001, T1021.004"
+    },
+    {
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "count": 15,
+      "first": "2026-11-12T22:57:13.293-0300",
+      "last": "2026-11-12T22:57:17.296-0300",
+      "srcips": "192.168.10.20",
+      "agents": "lab-server",
+      "mitre": "T1110.001, T1021.004"
+    },
+    {
+      "rule_id": "651",
+      "level": 3,
+      "description": "Host Blocked by firewall-drop Active Response",
+      "count": 1,
+      "first": "2026-11-12T22:57:25.994-0300",
+      "last": "2026-11-12T22:57:25.994-0300",
+      "srcips": "192.168.10.20",
+      "agents": "lab-server",
+      "mitre": ""
+    }
+  ],
+  "alertas": [
+    {
+      "timestamp": "2026-11-12T22:57:13.293-0300",
+      "rule_id": "5710",
+      "level": 5,
+      "description": "sshd: Attempt to login using a non-existent user",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed",
+        "invalid_login"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:12.496182-03:00 vm sshd[23422]: Invalid user admin from 192.168.10.20 port 43498"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:13.293-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:12.498794-03:00 vm sshd[23422]: Failed password for invalid user admin from 192.168.10.20 port 43498 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:13.293-0300",
+      "rule_id": "5710",
+      "level": 5,
+      "description": "sshd: Attempt to login using a non-existent user",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed",
+        "invalid_login"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:12.801490-03:00 vm sshd[23423]: Invalid user admin from 192.168.10.20 port 54941"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:13.293-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:12.803728-03:00 vm sshd[23423]: Failed password for invalid user admin from 192.168.10.20 port 54941 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:13.293-0300",
+      "rule_id": "5710",
+      "level": 5,
+      "description": "sshd: Attempt to login using a non-existent user",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed",
+        "invalid_login"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:13.106078-03:00 vm sshd[23424]: Invalid user admin from 192.168.10.20 port 53985"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:13.293-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:13.107657-03:00 vm sshd[23424]: Failed password for invalid user admin from 192.168.10.20 port 53985 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:14.294-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:13.409922-03:00 vm sshd[23522]: Failed password for labuser from 192.168.10.20 port 53534 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:14.294-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:13.712354-03:00 vm sshd[23523]: Failed password for labuser from 192.168.10.20 port 59794 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:14.294-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:14.015124-03:00 vm sshd[23524]: Failed password for labuser from 192.168.10.20 port 45063 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:15.294-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:14.317329-03:00 vm sshd[23525]: Failed password for labuser from 192.168.10.20 port 56289 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:15.294-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:14.619729-03:00 vm sshd[23526]: Failed password for labuser from 192.168.10.20 port 41501 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:15.294-0300",
+      "rule_id": "5763",
+      "level": 10,
+      "description": "sshd: brute force trying to get access to the system. Authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failures"
+      ],
+      "mitre": {
+        "id": [
+          "T1110"
+        ],
+        "tactic": [
+          "Credential Access"
+        ],
+        "technique": [
+          "Brute Force"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:14.619729-03:00 vm sshd[23526]: Failed password for labuser from 192.168.10.20 port 41501 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:15.295-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:14.922354-03:00 vm sshd[23527]: Failed password for labuser from 192.168.10.20 port 43008 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:15.295-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:15.224758-03:00 vm sshd[23528]: Failed password for labuser from 192.168.10.20 port 57422 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:16.295-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:15.527256-03:00 vm sshd[23529]: Failed password for labuser from 192.168.10.20 port 51572 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:16.295-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:15.829682-03:00 vm sshd[23530]: Failed password for labuser from 192.168.10.20 port 50070 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:16.295-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:16.131889-03:00 vm sshd[23531]: Failed password for labuser from 192.168.10.20 port 43175 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:17.296-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:16.434406-03:00 vm sshd[23532]: Failed password for labuser from 192.168.10.20 port 41223 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:17.296-0300",
+      "rule_id": "5760",
+      "level": 5,
+      "description": "sshd: authentication failed.",
+      "groups": [
+        "syslog",
+        "sshd",
+        "authentication_failed"
+      ],
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1021.004"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Lateral Movement"
+        ],
+        "technique": [
+          "Password Guessing",
+          "SSH"
+        ]
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026-11-12T22:57:16.736820-03:00 vm sshd[23533]: Failed password for labuser from 192.168.10.20 port 56797 ssh2"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:25.953-0300",
+      "rule_id": "100104",
+      "level": 8,
+      "description": "Firewall do lab: IP 192.168.10.20 bloqueado (resposta a incidente)",
+      "groups": [
+        "lab-fw",
+        "firewall",
+        "active_response"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:57:25 vm lab-fw: Nov 12 22:57:25 fw FW-API BLOCK SRC=192.168.10.20 TIMEOUT=1h REASON='INC-83216e7b51 reincidencia detectada'"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:25.994-0300",
+      "rule_id": "651",
+      "level": 3,
+      "description": "Host Blocked by firewall-drop Active Response",
+      "groups": [
+        "ossec",
+        "active_response"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "lab-server",
+      "srcip": "192.168.10.20",
+      "dstip": null,
+      "dstport": null,
+      "signature": null,
+      "file": null,
+      "full_log": "2026/11/12 22:57:25 active-response/bin/firewall-drop: add 192.168.10.20 (lab-server)"
+    },
+    {
+      "timestamp": "2026-11-12T22:57:46.242-0300",
+      "rule_id": "100103",
+      "level": 7,
+      "description": "Firewall do lab: trafego de IP em quarentena (blocklist) 192.168.10.20",
+      "groups": [
+        "lab-fw",
+        "firewall"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "198.51.100.10",
+      "dstport": "80",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:57:46 vm lab-fw: Nov 12 22:57:45 vm FW-BLOCKLIST  IN=eth-lan OUT=eth-wan MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=198.51.100.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=28810 DF PROTO=TCP SPT=35186 DPT=80 SEQ=322313574 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:57:47.266-0300",
+      "rule_id": "100103",
+      "level": 7,
+      "description": "Firewall do lab: trafego de IP em quarentena (blocklist) 192.168.10.20",
+      "groups": [
+        "lab-fw",
+        "firewall"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "198.51.100.10",
+      "dstport": "80",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:57:47 vm lab-fw: Nov 12 22:57:46 vm FW-BLOCKLIST  IN=eth-lan OUT=eth-wan MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=198.51.100.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=28811 DF PROTO=TCP SPT=35186 DPT=80 SEQ=322313574 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:57:48.295-0300",
+      "rule_id": "100103",
+      "level": 7,
+      "description": "Firewall do lab: trafego de IP em quarentena (blocklist) 192.168.10.20",
+      "groups": [
+        "lab-fw",
+        "firewall"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "198.51.100.10",
+      "dstport": "80",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:57:48 vm lab-fw: Nov 12 22:57:47 vm FW-BLOCKLIST  IN=eth-lan OUT=eth-wan MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=198.51.100.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=28812 DF PROTO=TCP SPT=35186 DPT=80 SEQ=322313574 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:57:49.314-0300",
+      "rule_id": "100103",
+      "level": 7,
+      "description": "Firewall do lab: trafego de IP em quarentena (blocklist) 192.168.10.20",
+      "groups": [
+        "lab-fw",
+        "firewall"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "198.51.100.10",
+      "dstport": "80",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:57:49 vm lab-fw: Nov 12 22:57:48 vm FW-BLOCKLIST  IN=eth-lan OUT=eth-wan MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=198.51.100.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=28813 DF PROTO=TCP SPT=35186 DPT=80 SEQ=322313574 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    },
+    {
+      "timestamp": "2026-11-12T22:57:50.338-0300",
+      "rule_id": "100103",
+      "level": 7,
+      "description": "Firewall do lab: trafego de IP em quarentena (blocklist) 192.168.10.20",
+      "groups": [
+        "lab-fw",
+        "firewall"
+      ],
+      "mitre": {
+        "id": [],
+        "tactic": [],
+        "technique": []
+      },
+      "agent": "siem-emulador",
+      "srcip": "192.168.10.20",
+      "dstip": "198.51.100.10",
+      "dstport": "80",
+      "signature": null,
+      "file": null,
+      "full_log": "<132>Nov 12 22:57:50 vm lab-fw: Nov 12 22:57:49 vm FW-BLOCKLIST  IN=eth-lan OUT=eth-wan MAC=66:1e:e4:2b:ce:ac:0e:26:1b:d4:63:bf:08:00 SRC=192.168.10.20 DST=198.51.100.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=28814 DF PROTO=TCP SPT=35186 DPT=80 SEQ=322313574 ACK=0 WINDOW=64240 SYN URGP=0 MARK=0x0 "
+    }
+  ],
+  "incidentes": [
+    {
+      "id": "INC-83216e7b51",
+      "created_at": 1794535045.9967306,
+      "first_ts": "2026-11-12T22:57:15.294-0300",
+      "last_ts": "2026-11-12T22:57:15.294-0300",
+      "category": "autenticacao_ssh",
+      "srcip": "192.168.10.20",
+      "agents": "lab-server",
+      "rule_ids": "5763",
+      "max_level": 10,
+      "alert_count": 1,
+      "summary": "categoria autenticacao_ssh. regras: sshd: brute force trying to get access to the system. Authentication failed. (nivel 10, 1x). motivo: nivel >= 7",
+      "analysis": "{\"classificacao\": \"suspeito\", \"gravidade\": \"alta\", \"causa_provavel\": \"Varias falhas de autenticacao SSH a partir da mesma origem em pouco tempo, padrao compativel com tentativa de adivinhacao de senha (forca bruta).\", \"mitre\": [{\"tecnica_id\": \"T1110\", \"tecnica\": \"Brute Force\", \"tatica\": \"Credential Access\"}], \"acao_recomendada\": \"Bloquear temporariamente a origem; verificar se houve login bem-sucedido apos as falhas (regra 5715); exigir chave SSH/MFA, limitar tentativas (MaxAuthTries) e revisar contas expostas.\", \"sugestao_regra\": {\"tipo\": \"active-response\", \"conteudo\": \"<active-response>\\n  <command>firewall-drop</command>\\n  <location>local</location>\\n  <rules_id>5763,5712</rules_id>\\n  <timeout>600</timeout>\\n</active-response>\", \"justificativa\": \"Resposta automatica do Wazuh a forca bruta SSH, com bloqueio temporario de 10 minutos.\"}, \"reincidencia\": true, \"confianca\": \"media\", \"resumo\": \"1 alerta(s) da categoria autenticacao_ssh (nivel maximo 10) de 192.168.10.20: 5763 (sshd: brute force trying to get access to the system. Authentication failed.).\", \"origem_analise\": \"contingencia/playbook (LLM indisponivel: ConnectionError)\"}",
+      "recurrence": 1,
+      "prior_count": 2,
+      "action": "firewall: 192.168.10.20 em quarentena por 1h; active-response: firewall-drop 192.168.10.20 no agente lab-server (001)"
+    }
+  ]
+}

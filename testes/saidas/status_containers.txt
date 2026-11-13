@@ -1,0 +1,56 @@
+# status_containers.txt - ambiente experimental - 2026-11-12T22:58:04-03:00
+[2026-11-12T22:58:04-03:00] siem-gerencia:~$ ip netns list
+fw (id: 0)
+cli (id: 2)
+srv (id: 1)
+inet (id: 3)
+
+[2026-11-12T22:58:04-03:00] siem-gerencia:~$ pgrep -a -f 'suricata|emulador_siem|analyst.main|fw_api|ulogd|nginx|sshd|internet_fake' | cut -c1-140
+5315 ulogd -d -c /etc/ulogd.conf
+5320 python3 /usr/local/bin/fw_api.py
+5332 nginx: master process nginx
+5333 nginx: worker process
+5334 nginx: worker process
+5336 sshd: /usr/sbin/sshd [listener] 0 of 10-100 startups
+5337 python3 /home/claude/lab-soc/simulacao/internet_fake.py
+5340 suricata -D -c /etc/suricata/suricata.yaml --af-packet=br-lab-lan -k none --set vars.address-groups.HOME_NET=[192.168.10.0/24] -S /home
+5341 python3 /home/claude/lab-soc/simulacao/emulador_siem.py
+5505 python3 -m analyst.main
+5785 bash -c pgrep -a -f 'suricata|emulador_siem|analyst.main|fw_api|ulogd|nginx|sshd|internet_fake' | cut -c1-140
+
+[2026-11-12T22:58:04-03:00] siem-gerencia:~$ cat /home/claude/lab-soc/ia/saude.md
+# Saude do laboratorio — ATENCAO
+
+Verificado em 2026-11-12T22:58:04-03:00.
+
+**Problemas:**
+- servico ollama sem resposta
+- modelo deepseek-r1:8b nao carregado no Ollama
+
+## Servicos
+
+| Servico | Estado |
+|---|---|
+| firewall-api | OK |
+| siem-emulador-api | OK |
+| ollama | FALHA |
+
+## Agentes Wazuh
+
+| ID | Nome | IP | Status | Versao |
+|---|---|---|---|---|
+| 000 | siem-emulador | 127.0.0.1 | active | emulador |
+| 001 | lab-server | 192.168.10.10 | active | simulado |
+| 002 | lab-cliente | 192.168.10.20 | active | simulado |
+
+## Suricata
+
+- eve.json: existe; tamanho 290230 bytes
+- ultima escrita ha: 4 s
+- cresceu desde a ultima verificacao: None
+
+## Wazuh / IA
+
+- ultimo alerta gravado ha: 14 s
+- modelos no Ollama: nenhum
+

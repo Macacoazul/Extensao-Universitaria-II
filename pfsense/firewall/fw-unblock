@@ -1,0 +1,3 @@
+#!/bin/sh
+set -eu
+exec python3 /usr/local/bin/fw_api.py --cli unblock "${1:?informe o IP}"

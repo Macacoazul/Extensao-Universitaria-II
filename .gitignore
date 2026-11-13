@@ -1,0 +1,9 @@
+# Segredos e arquivos gerados que nao devem ir para o git
+.env
+wazuh/config/wazuh_indexer_ssl_certs/
+diagnostico/
+ia/analises/
+__pycache__/
+*.pyc
+.pytest_cache/
+_sync/
